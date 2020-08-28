@@ -39,7 +39,11 @@ public class UserDaoImpl implements UserService {
 
 	@Override
 	public User findByUsername(String username) {
-		return userDao.findByUsername(username);
+		User user = userDao.findByUsername(username);
+		if(user != null) {
+			return user;
+		}
+		return null;
 	}
 
 	@Override
