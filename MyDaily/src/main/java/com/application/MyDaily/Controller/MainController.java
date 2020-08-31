@@ -1,5 +1,6 @@
 package com.application.MyDaily.Controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,19 @@ public class MainController {
 		mesDao.save(message);
 		
 		Iterable<Message> messages = mesDao.findAll();
+		model.put("messages", messages);
+		return "Note";
+	}
+	
+	@PostMapping("filter")
+	public String filter(@RequestParam String filter, Map<String, Object> model) {
+		Iterable<Message> messages;
+		if(filter != null && !filter.isEmpty()) {
+			messages = mesDao.findByTag(filter);
+		}else {
+			messages = mesDao.findAll();
+		}
+		
 		model.put("messages", messages);
 		return "Note";
 	}

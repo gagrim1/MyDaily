@@ -14,6 +14,10 @@
           </form>
         </div>
         <div>Messages List</div>
+        <form action="filter" method="post">
+          <input type="text" name="filter" />
+          <button type="submit">Find</button>
+        </form>
         <tr th:each="message : ${messages}">
           <td><span th:text="${message.text}">message</span></td>
           <td><span th:text="${message.tag}">tag</span></td>
