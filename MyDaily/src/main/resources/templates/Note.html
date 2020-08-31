@@ -6,12 +6,17 @@
     </head>
     <body>
         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-        <ul>
-          <th:block th:each="user : ${users}">
-            <li th:utext="${user.id}">..</li>
-            <li th:utext="${user.name}">..</li>
-            <li th:utext="${user.password}">..</li>
-          </th:block>
-        </ul>
+        <div>
+          <form action="greeting" method="post">
+            <input type="text" name="text" placeholder="Enter a message" />
+            <input type="text" name="tag" placeholder="Enter a tag" />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+        <div>Messages List</div>
+        <tr th:each="message : ${messages}">
+          <td><span th:text="${message.text}">message</span></td>
+          <td><span th:text="${message.tag}">tag</span></td>
+        </tr>
     </body>
 </html>
