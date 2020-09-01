@@ -21,6 +21,7 @@
         <tr th:each="message : ${messages}">
           <td><span th:text="${message.text}">message</span></td>
           <td><span th:text="${message.tag}">tag</span></td>
+          <td><a th:href="@{/delete/{id}(id=${message.id})}">delete</a></td>
         </tr>
     </body>
 </html>
