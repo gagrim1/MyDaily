@@ -1,66 +1,83 @@
 package com.application.MyDaily.Controller;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.application.MyDaily.Repository.MessageDao;
 import com.application.MyDaily.domain.Message;
 
-@Controller
+@RestController
 public class MainController {
 	
 	@Autowired
 	private MessageDao mesDao;
     
 	@GetMapping("/greeting")
-    public String greeting(Map<String, Object> model) {
+    public ModelAndView greeting() {
 		Iterable<Message> messages = mesDao.findAll();
-		model.put("messages", messages);
-    	return "Note";
+		ModelAndView mav = new ModelAndView("Note");
+		mav.addObject("messages", messages);
+    	return mav;
     }
 	
 	@PostMapping("/greeting")
-	public String write(
-			@RequestParam String text, @RequestParam String tag, Map<String, Object> model) {
+	public ModelAndView write(@RequestParam String text, @RequestParam String tag) {
 		Message message = new Message(text, tag);
 		mesDao.save(message);
 		
 		Iterable<Message> messages = mesDao.findAll();
-		model.put("messages", messages);
-		return "Note";
+		ModelAndView mav = new ModelAndView("Note");
+		mav.addObject("messages", messages);
+		return mav;
 	}
 	
 	@PostMapping("filter")
-	public String filter(@RequestParam String filter, Map<String, Object> model) {
+	public ModelAndView filter(@RequestParam String filter) {
 		Iterable<Message> messages;
 		if(filter != null && !filter.isEmpty()) {
 			messages = mesDao.findByTag(filter);
 		}else {
 			messages = mesDao.findAll();
 		}
-		
-		model.put("messages", messages);
-		return "Note";
+		ModelAndView mav = new ModelAndView("Note");
+		mav.addObject("messages", messages);
+		return mav;
+	}
+	
+	@PostMapping("/delete/filter")
+	public ModelAndView filterRe(@RequestParam String filter) {
+	    ModelAndView mav = new ModelAndView("Note");
+	    Iterable<Message> messages;
+		if(filter != null && !filter.isEmpty()) {
+			messages = mesDao.findByTag(filter);
+		}else {
+			messages = mesDao.findAll();
+		}
+		mav.addObject("messages", messages);
+	    return mav;
 	}
 	
 	@GetMapping("/delete/{id}")
-	public String delete(@PathVariable("id") Long id, Map<String, Object> model) {
+	public ModelAndView delete(@PathVariable Long id) {
 		mesDao.deleteById(id);
 		Iterable<Message> messages = mesDao.findAll();
-		model.put("messages", messages);
 		ModelAndView mav = new ModelAndView("Note");
-		mav.addObject("message", messages);
-		return "Note";
+		mav.addObject("messages", messages);
+		return mav;
+	}
+	@PostMapping("/delete/greeting")
+	public ModelAndView ret(@RequestParam String text, @RequestParam String tag) {
+		ModelAndView mav = new ModelAndView("Note");
+		Message message = new Message(text, tag);
+		mesDao.save(message);
+		
+		Iterable<Message> messages = mesDao.findAll();
+		mav.addObject("messages", messages);
+		return mav;
 	}
 }
