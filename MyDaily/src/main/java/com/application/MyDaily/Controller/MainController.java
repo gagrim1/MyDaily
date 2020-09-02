@@ -8,18 +8,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.application.MyDaily.Repository.MessageDao;
+import com.application.MyDaily.Dao.MessageDao;
+import com.application.MyDaily.Services.MessageService;
 import com.application.MyDaily.domain.Message;
 
 @RestController
 public class MainController {
 	
 	@Autowired
-	private MessageDao mesDao;
+	private MessageService mesServ;
     
 	@GetMapping("/greeting")
     public ModelAndView greeting() {
-		Iterable<Message> messages = mesDao.findAll();
+		Iterable<Message> messages = mesServ.findAll();
 		ModelAndView mav = new ModelAndView("Note");
 		mav.addObject("messages", messages);
     	return mav;
@@ -28,9 +29,9 @@ public class MainController {
 	@PostMapping("/greeting")
 	public ModelAndView write(@RequestParam String text, @RequestParam String tag) {
 		Message message = new Message(text, tag);
-		mesDao.save(message);
+		mesServ.saveMessage(message);
 		
-		Iterable<Message> messages = mesDao.findAll();
+		Iterable<Message> messages = mesServ.findAll();
 		ModelAndView mav = new ModelAndView("Note");
 		mav.addObject("messages", messages);
 		return mav;
@@ -40,9 +41,9 @@ public class MainController {
 	public ModelAndView filter(@RequestParam String filter) {
 		Iterable<Message> messages;
 		if(filter != null && !filter.isEmpty()) {
-			messages = mesDao.findByTag(filter);
+			messages = mesServ.findByTag(filter);
 		}else {
-			messages = mesDao.findAll();
+			messages = mesServ.findAll();
 		}
 		ModelAndView mav = new ModelAndView("Note");
 		mav.addObject("messages", messages);
@@ -54,9 +55,9 @@ public class MainController {
 	    ModelAndView mav = new ModelAndView("Note");
 	    Iterable<Message> messages;
 		if(filter != null && !filter.isEmpty()) {
-			messages = mesDao.findByTag(filter);
+			messages = mesServ.findByTag(filter);
 		}else {
-			messages = mesDao.findAll();
+			messages = mesServ.findAll();
 		}
 		mav.addObject("messages", messages);
 	    return mav;
@@ -64,8 +65,8 @@ public class MainController {
 	
 	@GetMapping("/delete/{id}")
 	public ModelAndView delete(@PathVariable Long id) {
-		mesDao.deleteById(id);
-		Iterable<Message> messages = mesDao.findAll();
+		mesServ.deleteMessageById(id);
+		Iterable<Message> messages = mesServ.findAll();
 		ModelAndView mav = new ModelAndView("Note");
 		mav.addObject("messages", messages);
 		return mav;
@@ -74,9 +75,9 @@ public class MainController {
 	public ModelAndView ret(@RequestParam String text, @RequestParam String tag) {
 		ModelAndView mav = new ModelAndView("Note");
 		Message message = new Message(text, tag);
-		mesDao.save(message);
+		mesServ.saveMessage(message);
 		
-		Iterable<Message> messages = mesDao.findAll();
+		Iterable<Message> messages = mesServ.findAll();
 		mav.addObject("messages", messages);
 		return mav;
 	}

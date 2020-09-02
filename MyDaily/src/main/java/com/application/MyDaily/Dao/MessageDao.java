@@ -1,4 +1,4 @@
-package com.application.MyDaily.Repository;
+package com.application.MyDaily.Dao;
 
 import java.util.List;
 
